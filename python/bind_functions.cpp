@@ -18,7 +18,7 @@ void bind_functions(nb::module_& m) {
            })
       .def("__add__",
            [](std::shared_ptr<const Fn> f, std::shared_ptr<const Fn> g) {
-             return std::make_shared<const functions::AddFunctions>(f, g);
+             return functions::add_functions(f, g);
            });
 
   nb::class_<functions::LinearPolynomial, Fn>(m, "LinearPolynomial")
