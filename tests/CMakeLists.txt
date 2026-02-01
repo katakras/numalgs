@@ -10,6 +10,7 @@ FetchContent_MakeAvailable(Catch2)
 
 add_executable(numalgs_tests
     test_functions.cpp
+    test_root_finding.cpp
 )
 
 target_link_libraries(numalgs_tests
