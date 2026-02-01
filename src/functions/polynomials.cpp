@@ -2,11 +2,15 @@
 
 namespace functions {
 
-LinearPolynomial::LinearPolynomial(const double slope, const double intercept)
-    : slope_(slope), intercept_(intercept) {}
+Polynomial::Polynomial(std::vector<double> coefficients)
+    : coefficients_(std::move(coefficients)) {}
 
-double LinearPolynomial::operator()(const double x) const {
-  return slope_ * x + intercept_;
+double Polynomial::operator()(const double x) const {
+  double s = coefficients_[0u];
+  for (size_t i = 1u; i < coefficients_.size(); ++i) {
+    s += coefficients_[i] * std::pow(x, i);
+  }
+  return s;
 }
 
 }  // namespace functions

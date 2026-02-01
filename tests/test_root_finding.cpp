@@ -8,7 +8,7 @@ TEST_CASE("test_basic_bisection") {
   const double slope = 0.5;
   const double intercept = 1.0;
   const auto& p =
-      std::make_shared<const functions::LinearPolynomial>(slope, intercept);
+      std::make_shared<const functions::Polynomial>(std::vector{0.5, 1.0});
 
   const double sol = root_finding::bisection(p, -5.0, 5.5);
   const double f_sol = (*p)(sol);
