@@ -37,3 +37,16 @@ TEST_CASE("test_addition") {
   const double actual = c(0.1);
   REQUIRE(fabs(expected - actual) < 1e-12);
 }
+
+TEST_CASE("test_multiplication") {
+  // expected expression is y = (2*x - 0.5) * (2*x + 0.5) = 4*x^2 - 0.25
+  const auto& p =
+      std::make_shared<const functions::Polynomial>(std::vector{0.5, 2.0});
+  const auto& q =
+      std::make_shared<const functions::Polynomial>(std::vector{-0.5, 2.0});
+
+  const auto& c = functions::MultiplyFunctions(p, q);
+  const double expected = 4 * 0.1 * 0.1 - 0.25;
+  const double actual = c(0.1);
+  REQUIRE(fabs(expected - actual) < 1e-12);
+}

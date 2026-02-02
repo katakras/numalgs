@@ -18,11 +18,19 @@ double AddFunctions::operator()(const double x) const {
   return (*lhs_)(x) + (*rhs_)(x);
 }
 
+MultiplyFunctions::MultiplyFunctions(std::shared_ptr<const Function> lhs,
+                                     std::shared_ptr<const Function> rhs)
+    : lhs_(std::move(lhs)), rhs_(std::move(rhs)) {}
+
+double MultiplyFunctions::operator()(const double x) const {
+  return (*lhs_)(x) * (*rhs_)(x);
+}
+
 struct add_functions_visitor {
   const std::shared_ptr<const Function>& lhs;
   const std::shared_ptr<const Function>& rhs;
 
-  // Case of adding two linear polynomials
+  // Case of adding two polynomials
   std::shared_ptr<const Function> operator()(
       const std::reference_wrapper<const Polynomial>&,
       const std::reference_wrapper<const Polynomial>&) const {
@@ -61,4 +69,11 @@ std::shared_ptr<const Function> add_functions(
   return std::visit(add_functions_visitor{lhs, rhs}, lhs->as_fvariant(),
                     rhs->as_fvariant());
 }
+
+std::shared_ptr<const Function> multiply_functions(
+    const std::shared_ptr<const Function>& lhs,
+    const std::shared_ptr<const Function>& rhs) {
+  return std::make_shared<const MultiplyFunctions>(lhs, rhs);
+}
+
 }  // namespace functions

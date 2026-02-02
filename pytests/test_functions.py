@@ -26,9 +26,15 @@ def test_add_functions():
 
     assert (p1 + p2)(2.0) == p1(2.0) + p2(2.0)
 
-def test_add_linear_polynomials_types():
+def test_add_polynomials_types():
     p1 = numalgs_py.Polynomial([1.0, 0.5])
     p2 = numalgs_py.Polynomial([0.7, 0.3])
 
     assert type(p1 + p2) == type(p1)
     assert type(p1(p2)) != type (p1)    # we may want to change this
+
+def test_mult_functions():
+    p1 = numalgs_py.Polynomial([1.0, 0.5])
+    p2 = numalgs_py.Polynomial([0.7, 0.3])
+
+    assert (p1 * p2)(2.0) == p1(2.0) * p2(2.0)
