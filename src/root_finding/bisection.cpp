@@ -3,6 +3,10 @@
 
 namespace root_finding {
 
+RootFindingConfigBisection::RootFindingConfigBisection(const double a,
+                                                       const double b)
+    : a_(a), b_(b) {}
+
 double bisection(const std::shared_ptr<const functions::Function>& f_ptr,
                  double a, double b) {
   const auto& f = *f_ptr;

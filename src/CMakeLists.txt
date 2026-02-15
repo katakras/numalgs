@@ -10,5 +10,7 @@ target_sources(numalgs
     PRIVATE
         functions/operations.cpp
         functions/polynomials.cpp
+        results/results.cpp
         root_finding/bisection.cpp
+        root_finding/generic.cpp
 )
