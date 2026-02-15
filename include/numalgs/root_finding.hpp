@@ -1,7 +1,6 @@
 #pragma once
 
 #include <numalgs/functions.hpp>
-// #include <numalgs/results.hpp>
 
 template <typename TResult>
 class Result;

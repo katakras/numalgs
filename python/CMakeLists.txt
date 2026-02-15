@@ -1,6 +1,8 @@
 nanobind_add_module(numalgs_py
     module.cpp
     bind_functions.cpp
+    bind_results.cpp
+    bind_root_finding.cpp
 )
 
 set_target_properties(numalgs_py PROPERTIES
