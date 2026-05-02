@@ -19,4 +19,6 @@ target_link_libraries(numalgs_tests
         Catch2::Catch2WithMain
 )
 
+numalgs_enable_warnings_as_errors(numalgs_tests)
+
 add_test(NAME numalgs_tests COMMAND numalgs_tests)

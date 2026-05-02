@@ -14,3 +14,5 @@ target_sources(numalgs
         root_finding/bisection.cpp
         root_finding/generic.cpp
 )
+
+numalgs_enable_warnings_as_errors(numalgs)

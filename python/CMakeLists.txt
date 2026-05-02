@@ -9,8 +9,15 @@ set_target_properties(numalgs_py PROPERTIES
   LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
 )
 
+target_include_directories(numalgs_py
+    SYSTEM PRIVATE
+        "${nanobind_SOURCE_DIR}/include"
+)
+
 target_link_libraries(numalgs_py
     PRIVATE
         numalgs
         Python::Module
 )
+
+numalgs_enable_warnings_as_errors(numalgs_py)

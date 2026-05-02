@@ -9,7 +9,8 @@ namespace {
 std::shared_ptr<const functions::Polynomial> dummy_polynomial() {
   const double slope = 0.5;
   const double intercept = 1.0;
-  return std::make_shared<const functions::Polynomial>(std::vector{0.5, 1.0});
+  return std::make_shared<const functions::Polynomial>(
+      std::vector{slope, intercept});
 }
 }  // namespace
 
