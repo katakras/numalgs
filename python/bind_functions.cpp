@@ -65,6 +65,12 @@ void bind_functions(nb::module_& m) {
 
   nb::class_<functions::Exponential, Fn>(m, "Exponential").def(nb::init<>());
 
+  nb::class_<functions::Sin, Fn>(m, "Sin").def(nb::init<>());
+
+  nb::class_<functions::Cos, Fn>(m, "Cos").def(nb::init<>());
+
+  nb::class_<functions::Tan, Fn>(m, "Tan").def(nb::init<>());
+
   nb::class_<functions::ComposedFunction, Fn>(m, "_ComposedFunction");
 
   nb::class_<functions::AddFunctions, Fn>(m, "_AddFunctions");

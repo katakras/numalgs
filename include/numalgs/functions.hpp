@@ -12,6 +12,9 @@ class SubtractFunctions;
 class MultiplyFunctions;
 class DivideFunctions;
 class Exponential;
+class Sin;
+class Cos;
+class Tan;
 class Polynomial;
 using FVariant = std::variant<std::reference_wrapper<const ComposedFunction>,
                               std::reference_wrapper<const AddFunctions>,
@@ -19,6 +22,9 @@ using FVariant = std::variant<std::reference_wrapper<const ComposedFunction>,
                               std::reference_wrapper<const MultiplyFunctions>,
                               std::reference_wrapper<const DivideFunctions>,
                               std::reference_wrapper<const Exponential>,
+                              std::reference_wrapper<const Sin>,
+                              std::reference_wrapper<const Cos>,
+                              std::reference_wrapper<const Tan>,
                               std::reference_wrapper<const Polynomial>>;
 
 // Base class for function representations
@@ -101,6 +107,27 @@ class DivideFunctions : public Function {
 
 // Natural exponential y = e^x
 class Exponential : public Function {
+ public:
+  double operator()(const double x) const override;
+  FVariant as_fvariant() const override { return std::cref(*this); }
+};
+
+// Trigonometric sine y = sin(x)
+class Sin : public Function {
+ public:
+  double operator()(const double x) const override;
+  FVariant as_fvariant() const override { return std::cref(*this); }
+};
+
+// Trigonometric cosine y = cos(x)
+class Cos : public Function {
+ public:
+  double operator()(const double x) const override;
+  FVariant as_fvariant() const override { return std::cref(*this); }
+};
+
+// Trigonometric tangent y = tan(x)
+class Tan : public Function {
  public:
   double operator()(const double x) const override;
   FVariant as_fvariant() const override { return std::cref(*this); }

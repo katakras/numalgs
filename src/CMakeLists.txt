@@ -11,6 +11,7 @@ target_sources(numalgs
         functions/exponential.cpp
         functions/operations.cpp
         functions/polynomials.cpp
+        functions/trigonometrics.cpp
         results/results.cpp
         root_finding/bisection.cpp
         root_finding/generic.cpp

@@ -46,6 +46,32 @@ TEST_CASE("test_exponential_composition") {
   REQUIRE(fabs(expected - actual) < 1e-12);
 }
 
+TEST_CASE("test_trigonometric_functions") {
+  const functions::Sin sin;
+  const functions::Cos cos;
+  const functions::Tan tan;
+
+  REQUIRE(fabs(std::sin(0.5) - sin(0.5)) < 1e-12);
+  REQUIRE(fabs(std::cos(0.5) - cos(0.5)) < 1e-12);
+  REQUIRE(fabs(std::tan(0.5) - tan(0.5)) < 1e-12);
+}
+
+TEST_CASE("test_trigonometric_composition") {
+  const auto& sin = std::make_shared<const functions::Sin>();
+  const auto& cos = std::make_shared<const functions::Cos>();
+  const auto& tan = std::make_shared<const functions::Tan>();
+  const auto& polynomial =
+      std::make_shared<const functions::Polynomial>(std::vector{1.0, 2.0});
+
+  const auto& sin_composed = functions::ComposedFunction(sin, polynomial);
+  const auto& cos_composed = functions::ComposedFunction(cos, polynomial);
+  const auto& tan_composed = functions::ComposedFunction(tan, polynomial);
+
+  REQUIRE(fabs(std::sin((*polynomial)(0.5)) - sin_composed(0.5)) < 1e-12);
+  REQUIRE(fabs(std::cos((*polynomial)(0.5)) - cos_composed(0.5)) < 1e-12);
+  REQUIRE(fabs(std::tan((*polynomial)(0.5)) - tan_composed(0.5)) < 1e-12);
+}
+
 TEST_CASE("test_addition") {
   // expected expression is y = 2*x - 0.5 + 2*x + 0.5 = 4*x
   const auto& p =

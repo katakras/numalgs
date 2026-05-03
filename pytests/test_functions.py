@@ -33,6 +33,25 @@ def test_exponential_composition():
 
     assert_relative_close(e(p)(3.0), math.exp(p(3.0)))
 
+def test_trigonometric_functions():
+    sin = numalgs_py.Sin()
+    cos = numalgs_py.Cos()
+    tan = numalgs_py.Tan()
+
+    assert_relative_close(sin(0.5), math.sin(0.5))
+    assert_relative_close(cos(0.5), math.cos(0.5))
+    assert_relative_close(tan(0.5), math.tan(0.5))
+
+def test_trigonometric_composition():
+    sin = numalgs_py.Sin()
+    cos = numalgs_py.Cos()
+    tan = numalgs_py.Tan()
+    p = numalgs_py.Polynomial([1.0, 2.0])
+
+    assert_relative_close(sin(p)(0.5), math.sin(p(0.5)))
+    assert_relative_close(cos(p)(0.5), math.cos(p(0.5)))
+    assert_relative_close(tan(p)(0.5), math.tan(p(0.5)))
+
 def test_add_functions():
     p1 = numalgs_py.Polynomial([1.0, 0.5])
     p2 = numalgs_py.Polynomial([0.7, 0.3])
