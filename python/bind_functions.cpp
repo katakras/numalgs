@@ -32,6 +32,14 @@ std::string function_to_str(const functions::Polynomial& p) {
   }
   return result;
 }
+
+std::string function_to_str(const functions::Exponential&) { return "exp(x)"; }
+
+std::string function_to_str(const functions::Sin&) { return "sin(x)"; }
+
+std::string function_to_str(const functions::Cos&) { return "cos(x)"; }
+
+std::string function_to_str(const functions::Tan&) { return "tan(x)"; }
 }  // namespace
 
 void bind_functions(nb::module_& m) {
@@ -61,15 +69,28 @@ void bind_functions(nb::module_& m) {
 
   nb::class_<functions::Polynomial, Fn>(m, "Polynomial")
       .def(nb::init<std::vector<double>>(), nb::arg("coefficients"))
-      .def("__str__", &function_to_str);
+      .def("__str__", nb::overload_cast<const functions::Polynomial&>(
+                          &function_to_str));
 
-  nb::class_<functions::Exponential, Fn>(m, "Exponential").def(nb::init<>());
+  nb::class_<functions::Exponential, Fn>(m, "Exponential")
+      .def(nb::init<>())
+      .def("__str__", nb::overload_cast<const functions::Exponential&>(
+                          &function_to_str));
 
-  nb::class_<functions::Sin, Fn>(m, "Sin").def(nb::init<>());
+  nb::class_<functions::Sin, Fn>(m, "Sin")
+      .def(nb::init<>())
+      .def("__str__",
+           nb::overload_cast<const functions::Sin&>(&function_to_str));
 
-  nb::class_<functions::Cos, Fn>(m, "Cos").def(nb::init<>());
+  nb::class_<functions::Cos, Fn>(m, "Cos")
+      .def(nb::init<>())
+      .def("__str__",
+           nb::overload_cast<const functions::Cos&>(&function_to_str));
 
-  nb::class_<functions::Tan, Fn>(m, "Tan").def(nb::init<>());
+  nb::class_<functions::Tan, Fn>(m, "Tan")
+      .def(nb::init<>())
+      .def("__str__",
+           nb::overload_cast<const functions::Tan&>(&function_to_str));
 
   nb::class_<functions::ComposedFunction, Fn>(m, "_ComposedFunction");
 
