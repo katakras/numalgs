@@ -63,6 +63,8 @@ void bind_functions(nb::module_& m) {
       .def(nb::init<std::vector<double>>(), nb::arg("coefficients"))
       .def("__str__", &function_to_str);
 
+  nb::class_<functions::Exponential, Fn>(m, "Exponential").def(nb::init<>());
+
   nb::class_<functions::ComposedFunction, Fn>(m, "_ComposedFunction");
 
   nb::class_<functions::AddFunctions, Fn>(m, "_AddFunctions");

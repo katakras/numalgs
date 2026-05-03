@@ -1,6 +1,7 @@
 import sys
 sys.path.append("build")
 
+import math
 from helpers import assert_relative_close
 import numalgs_py
 
@@ -20,6 +21,17 @@ def test_compose_functions():
     p2 = numalgs_py.Polynomial([0.7, 0.3])
 
     assert_relative_close((p1(p2))(2.0), p1(p2(2.0)))
+
+def test_exponential():
+    e = numalgs_py.Exponential()
+
+    assert_relative_close(e(5.0), math.exp(5.0))
+
+def test_exponential_composition():
+    e = numalgs_py.Exponential()
+    p = numalgs_py.Polynomial([1.0, 2.0])
+
+    assert_relative_close(e(p)(3.0), math.exp(p(3.0)))
 
 def test_add_functions():
     p1 = numalgs_py.Polynomial([1.0, 0.5])

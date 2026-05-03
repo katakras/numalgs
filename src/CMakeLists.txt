@@ -8,6 +8,7 @@ target_include_directories(numalgs
 
 target_sources(numalgs
     PRIVATE
+        functions/exponential.cpp
         functions/operations.cpp
         functions/polynomials.cpp
         results/results.cpp

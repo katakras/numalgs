@@ -11,12 +11,14 @@ class AddFunctions;
 class SubtractFunctions;
 class MultiplyFunctions;
 class DivideFunctions;
+class Exponential;
 class Polynomial;
 using FVariant = std::variant<std::reference_wrapper<const ComposedFunction>,
                               std::reference_wrapper<const AddFunctions>,
                               std::reference_wrapper<const SubtractFunctions>,
                               std::reference_wrapper<const MultiplyFunctions>,
                               std::reference_wrapper<const DivideFunctions>,
+                              std::reference_wrapper<const Exponential>,
                               std::reference_wrapper<const Polynomial>>;
 
 // Base class for function representations
@@ -95,6 +97,13 @@ class DivideFunctions : public Function {
  private:
   std::shared_ptr<const Function> lhs_;
   std::shared_ptr<const Function> rhs_;
+};
+
+// Natural exponential y = e^x
+class Exponential : public Function {
+ public:
+  double operator()(const double x) const override;
+  FVariant as_fvariant() const override { return std::cref(*this); }
 };
 
 // Generic polynomial y = \sum_{i=0}^n a_i * x^i

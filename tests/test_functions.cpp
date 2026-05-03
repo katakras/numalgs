@@ -1,5 +1,8 @@
 #include <math.h>
 
+#include <cmath>
+#include <memory>
+
 #include <catch2/catch_test_macros.hpp>
 #include <numalgs/functions.hpp>
 
@@ -23,6 +26,24 @@ TEST_CASE("test_composition") {
   const double expected = 4 * 0.1 - 0.5;
   const double actual = c(0.1);
   REQUIRE(expected == actual);
+}
+
+TEST_CASE("test_exponential") {
+  const functions::Exponential exponential;
+  const double expected = std::exp(5.0);
+  const double actual = exponential(5.0);
+  REQUIRE(fabs(expected - actual) < 1e-12);
+}
+
+TEST_CASE("test_exponential_composition") {
+  const auto& exponential = std::make_shared<const functions::Exponential>();
+  const auto& polynomial =
+      std::make_shared<const functions::Polynomial>(std::vector{1.0, 2.0});
+
+  const auto& composed = functions::ComposedFunction(exponential, polynomial);
+  const double expected = std::exp((*polynomial)(3.0));
+  const double actual = composed(3.0);
+  REQUIRE(fabs(expected - actual) < 1e-12);
 }
 
 TEST_CASE("test_addition") {
