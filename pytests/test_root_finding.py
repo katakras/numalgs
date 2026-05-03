@@ -1,7 +1,7 @@
 import sys
 sys.path.append("build")
 
-import numpy as np
+from helpers import assert_relative_close
 import numalgs_py
 
 def test_bisection():
@@ -14,6 +14,5 @@ def test_bisection():
     result = numalgs_py.find_root(p, bisection_config)
 
     assert result.status() == numalgs_py.ResultStatus.success
-    assert np.fabs(p(result.value())) < 1e-8
-
+    assert_relative_close(p(result.value()), 0.0, abs_tol=1e-8)
 
