@@ -28,7 +28,7 @@ find_package(Python 3.14.2 REQUIRED COMPONENTS Interpreter Development.Module)
 FetchContent_Declare(
     nanobind
     GIT_REPOSITORY https://github.com/wjakob/nanobind.git
-    GIT_TAG v1.8.0
+    GIT_TAG v2.9.1
     SYSTEM
     EXCLUDE_FROM_ALL
 )
