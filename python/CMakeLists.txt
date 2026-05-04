@@ -6,7 +6,7 @@ nanobind_add_module(numalgs_py
 )
 
 set_target_properties(numalgs_py PROPERTIES
-  LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
+    LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}"
 )
 
 target_include_directories(numalgs_py

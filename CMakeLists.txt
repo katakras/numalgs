@@ -1,8 +1,5 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 4.3)
 project(numalgs LANGUAGES CXX)
-
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 option(NUMALGS_WARNINGS_AS_ERRORS "Treat compiler warnings as errors" ON)
 
@@ -16,12 +13,12 @@ function(numalgs_enable_warnings_as_errors target)
     endif()
 endfunction()
 
-include (FetchContent)
+include(FetchContent)
 
 # find python
-if (EXISTS "${CMAKE_SOURCE_DIR}/.venv/bin/python")
+if (EXISTS "${PROJECT_SOURCE_DIR}/.venv/bin/python")
     set(Python_EXECUTABLE
-        "${CMAKE_SOURCE_DIR}/.venv/bin/python"
+        "${PROJECT_SOURCE_DIR}/.venv/bin/python"
         CACHE FILEPATH "Python executable" FORCE
     )
 endif()
@@ -32,13 +29,25 @@ FetchContent_Declare(
     nanobind
     GIT_REPOSITORY https://github.com/wjakob/nanobind.git
     GIT_TAG v1.8.0
+    SYSTEM
+    EXCLUDE_FROM_ALL
 )
+
+FetchContent_Declare(
+    Catch2
+    GIT_REPOSITORY https://github.com/catchorg/Catch2.git
+    GIT_TAG v3.5.4
+    SYSTEM
+    EXCLUDE_FROM_ALL
+)
+
 FetchContent_MakeAvailable(nanobind)
 
 add_subdirectory(src)
 add_subdirectory(python)
 
 include(CTest)
-enable_testing()
 
-add_subdirectory(tests)
+if (BUILD_TESTING)
+    add_subdirectory(tests)
+endif()
