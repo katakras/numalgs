@@ -137,3 +137,63 @@ TEST_CASE("test_division") {
   const double actual = (*c)(0.5);
   REQUIRE(fabs(expected - actual) < 1e-12);
 }
+
+TEST_CASE("test_polynomial_derivative") {
+  const auto& p =
+      std::make_shared<const functions::Polynomial>(std::vector{1.0, 2.0, 3.0});
+  const auto& dp = functions::derivative(p);
+
+  REQUIRE(fabs((*dp)(2.0) - 14.0) < 1e-12);
+  REQUIRE(std::dynamic_pointer_cast<const functions::Polynomial>(dp) != nullptr);
+
+  const auto& constant =
+      std::make_shared<const functions::Polynomial>(std::vector{5.0});
+  const auto& d_constant = functions::derivative(constant);
+  REQUIRE(fabs((*d_constant)(2.0)) < 1e-12);
+}
+
+TEST_CASE("test_basic_function_derivatives") {
+  const auto& exponential = std::make_shared<const functions::Exponential>();
+  const auto& sin = std::make_shared<const functions::Sin>();
+  const auto& cos = std::make_shared<const functions::Cos>();
+  const auto& tan = std::make_shared<const functions::Tan>();
+
+  REQUIRE(fabs((*functions::derivative(exponential))(0.5) - std::exp(0.5)) <
+          1e-12);
+  REQUIRE(fabs((*functions::derivative(sin))(0.5) - std::cos(0.5)) < 1e-12);
+  REQUIRE(fabs((*functions::derivative(cos))(0.5) + std::sin(0.5)) < 1e-12);
+  REQUIRE(fabs((*functions::derivative(tan))(0.5) -
+               1.0 / (std::cos(0.5) * std::cos(0.5))) < 1e-12);
+}
+
+TEST_CASE("test_expression_derivatives") {
+  const double x = 0.5;
+  const auto& p =
+      std::make_shared<const functions::Polynomial>(std::vector{1.0, 2.0});
+  const auto& q =
+      std::make_shared<const functions::Polynomial>(std::vector{3.0, 4.0});
+  const auto& exponential = std::make_shared<const functions::Exponential>();
+  const auto& sin = std::make_shared<const functions::Sin>();
+
+  const auto& add = functions::add_functions(p, exponential);
+  REQUIRE(fabs((*functions::derivative(add))(x) - (2.0 + std::exp(x))) <
+          1e-12);
+
+  const auto& subtract = functions::subtract_functions(p, exponential);
+  REQUIRE(fabs((*functions::derivative(subtract))(x) - (2.0 - std::exp(x))) <
+          1e-12);
+
+  const auto& multiply = functions::multiply_functions(p, exponential);
+  REQUIRE(fabs((*functions::derivative(multiply))(x) -
+               (2.0 * std::exp(x) + (*p)(x) * std::exp(x))) < 1e-12);
+
+  const auto& divide = functions::divide_functions(p, q);
+  const double expected_divide = (2.0 * (*q)(x) - (*p)(x) * 4.0) /
+                                 ((*q)(x) * (*q)(x));
+  REQUIRE(fabs((*functions::derivative(divide))(x) - expected_divide) < 1e-12);
+
+  const auto& composed =
+      std::make_shared<const functions::ComposedFunction>(sin, p);
+  REQUIRE(fabs((*functions::derivative(composed))(x) -
+               std::cos((*p)(x)) * 2.0) < 1e-12);
+}

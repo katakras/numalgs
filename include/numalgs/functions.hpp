@@ -44,6 +44,9 @@ class ComposedFunction : public Function {
   double operator()(const double x) const override;
   FVariant as_fvariant() const override { return std::cref(*this); }
 
+  const auto& outer() const { return outer_; }
+  const auto& inner() const { return inner_; }
+
  private:
   std::shared_ptr<const Function> outer_;
   std::shared_ptr<const Function> inner_;
@@ -57,6 +60,9 @@ class AddFunctions : public Function {
 
   double operator()(const double x) const override;
   FVariant as_fvariant() const override { return std::cref(*this); }
+
+  const auto& lhs() const { return lhs_; }
+  const auto& rhs() const { return rhs_; }
 
  private:
   std::shared_ptr<const Function> lhs_;
@@ -72,6 +78,9 @@ class SubtractFunctions : public Function {
   double operator()(const double x) const override;
   FVariant as_fvariant() const override { return std::cref(*this); }
 
+  const auto& lhs() const { return lhs_; }
+  const auto& rhs() const { return rhs_; }
+
  private:
   std::shared_ptr<const Function> lhs_;
   std::shared_ptr<const Function> rhs_;
@@ -86,6 +95,9 @@ class MultiplyFunctions : public Function {
   double operator()(const double x) const override;
   FVariant as_fvariant() const override { return std::cref(*this); }
 
+  const auto& lhs() const { return lhs_; }
+  const auto& rhs() const { return rhs_; }
+
  private:
   std::shared_ptr<const Function> lhs_;
   std::shared_ptr<const Function> rhs_;
@@ -99,6 +111,9 @@ class DivideFunctions : public Function {
 
   double operator()(const double x) const override;
   FVariant as_fvariant() const override { return std::cref(*this); }
+
+  const auto& lhs() const { return lhs_; }
+  const auto& rhs() const { return rhs_; }
 
  private:
   std::shared_ptr<const Function> lhs_;
@@ -166,5 +181,9 @@ std::shared_ptr<const Function> multiply_functions(
 std::shared_ptr<const Function> divide_functions(
     const std::shared_ptr<const Function>& lhs,
     const std::shared_ptr<const Function>& rhs);
+
+// Returns the analytic derivative of a function.
+std::shared_ptr<const Function> derivative(
+    const std::shared_ptr<const Function>& f);
 
 }  // namespace functions

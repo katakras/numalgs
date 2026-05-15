@@ -65,17 +65,25 @@ void bind_functions(nb::module_& m) {
       .def("__truediv__",
            [](std::shared_ptr<const Fn> f, std::shared_ptr<const Fn> g) {
              return functions::divide_functions(f, g);
-           });
+           })
+      .def("derivative", [](std::shared_ptr<const Fn> f) {
+        return functions::derivative(f);
+      });
+
+  m.def(
+      "derivative",
+      [](std::shared_ptr<const Fn> f) { return functions::derivative(f); },
+      nb::arg("f"));
 
   nb::class_<functions::Polynomial, Fn>(m, "Polynomial")
       .def(nb::init<std::vector<double>>(), nb::arg("coefficients"))
-      .def("__str__", nb::overload_cast<const functions::Polynomial&>(
-                          &function_to_str));
+      .def("__str__",
+           nb::overload_cast<const functions::Polynomial&>(&function_to_str));
 
   nb::class_<functions::Exponential, Fn>(m, "Exponential")
       .def(nb::init<>())
-      .def("__str__", nb::overload_cast<const functions::Exponential&>(
-                          &function_to_str));
+      .def("__str__",
+           nb::overload_cast<const functions::Exponential&>(&function_to_str));
 
   nb::class_<functions::Sin, Fn>(m, "Sin")
       .def(nb::init<>())

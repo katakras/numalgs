@@ -175,4 +175,93 @@ std::shared_ptr<const Function> divide_functions(
   return std::make_shared<const DivideFunctions>(lhs, rhs);
 }
 
+struct derivative_visitor {
+  const std::shared_ptr<const Function>& f;
+
+  std::shared_ptr<const Function> operator()(
+      const std::reference_wrapper<const ComposedFunction>& ref) const {
+    const auto& composed = ref.get();
+    const auto& outer_derivative = std::make_shared<const ComposedFunction>(
+        derivative(composed.outer()), composed.inner());
+    return multiply_functions(outer_derivative, derivative(composed.inner()));
+  }
+
+  std::shared_ptr<const Function> operator()(
+      const std::reference_wrapper<const AddFunctions>& ref) const {
+    const auto& add = ref.get();
+    return add_functions(derivative(add.lhs()), derivative(add.rhs()));
+  }
+
+  std::shared_ptr<const Function> operator()(
+      const std::reference_wrapper<const SubtractFunctions>& ref) const {
+    const auto& subtract = ref.get();
+    return subtract_functions(derivative(subtract.lhs()),
+                              derivative(subtract.rhs()));
+  }
+
+  std::shared_ptr<const Function> operator()(
+      const std::reference_wrapper<const MultiplyFunctions>& ref) const {
+    const auto& multiply = ref.get();
+    return add_functions(
+        multiply_functions(derivative(multiply.lhs()), multiply.rhs()),
+        multiply_functions(multiply.lhs(), derivative(multiply.rhs())));
+  }
+
+  std::shared_ptr<const Function> operator()(
+      const std::reference_wrapper<const DivideFunctions>& ref) const {
+    const auto& divide = ref.get();
+    const auto& numerator = subtract_functions(
+        multiply_functions(derivative(divide.lhs()), divide.rhs()),
+        multiply_functions(divide.lhs(), derivative(divide.rhs())));
+    const auto& denominator = multiply_functions(divide.rhs(), divide.rhs());
+    return divide_functions(numerator, denominator);
+  }
+
+  std::shared_ptr<const Function> operator()(
+      const std::reference_wrapper<const Exponential>&) const {
+    return f;
+  }
+
+  std::shared_ptr<const Function> operator()(
+      const std::reference_wrapper<const Sin>&) const {
+    return std::make_shared<const Cos>();
+  }
+
+  std::shared_ptr<const Function> operator()(
+      const std::reference_wrapper<const Cos>&) const {
+    const auto& minus_one =
+        std::make_shared<const Polynomial>(std::vector{-1.0});
+    const auto& sin = std::make_shared<const Sin>();
+    return multiply_functions(minus_one, sin);
+  }
+
+  std::shared_ptr<const Function> operator()(
+      const std::reference_wrapper<const Tan>&) const {
+    const auto& one = std::make_shared<const Polynomial>(std::vector{1.0});
+    const auto& cos = std::make_shared<const Cos>();
+    return divide_functions(one, multiply_functions(cos, cos));
+  }
+
+  std::shared_ptr<const Function> operator()(
+      const std::reference_wrapper<const Polynomial>& ref) const {
+    const auto& coefficients = ref.get().coefficients();
+    if (coefficients.size() == 1u) {
+      return std::make_shared<const Polynomial>(std::vector{0.0});
+    }
+
+    std::vector<double> derivative_coefficients(coefficients.size() - 1u, 0.0);
+    for (size_t i = 1u; i < coefficients.size(); ++i) {
+      derivative_coefficients[i - 1u] =
+          static_cast<double>(i) * coefficients[i];
+    }
+    return std::make_shared<const Polynomial>(
+        std::move(derivative_coefficients));
+  }
+};
+
+std::shared_ptr<const Function> derivative(
+    const std::shared_ptr<const Function>& f) {
+  return std::visit(derivative_visitor{f}, f->as_fvariant());
+}
+
 }  // namespace functions

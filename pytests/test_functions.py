@@ -99,3 +99,41 @@ def test_divide_functions():
 
     assert_relative_close((p1 / p2)(2.0), p1(2.0) / p2(2.0))
     assert type(p1 / p2) != type(p1)
+
+def test_polynomial_derivative():
+    p = numalgs_py.Polynomial([1.0, 2.0, 3.0])
+
+    assert_relative_close(p.derivative()(2.0), 14.0)
+    assert_relative_close(numalgs_py.derivative(p)(2.0), 14.0)
+
+    constant = numalgs_py.Polynomial([5.0])
+    assert_relative_close(constant.derivative()(2.0), 0.0)
+
+def test_basic_function_derivatives():
+    exponential = numalgs_py.Exponential()
+    sin = numalgs_py.Sin()
+    cos = numalgs_py.Cos()
+    tan = numalgs_py.Tan()
+
+    assert_relative_close(exponential.derivative()(0.5), math.exp(0.5))
+    assert_relative_close(sin.derivative()(0.5), math.cos(0.5))
+    assert_relative_close(cos.derivative()(0.5), -math.sin(0.5))
+    assert_relative_close(tan.derivative()(0.5), 1.0 / (math.cos(0.5) ** 2))
+
+def test_expression_derivatives():
+    x = 0.5
+    p = numalgs_py.Polynomial([1.0, 2.0])
+    q = numalgs_py.Polynomial([3.0, 4.0])
+    exponential = numalgs_py.Exponential()
+    sin = numalgs_py.Sin()
+
+    assert_relative_close((p + exponential).derivative()(x), 2.0 + math.exp(x))
+    assert_relative_close((p - exponential).derivative()(x), 2.0 - math.exp(x))
+    assert_relative_close(
+        (p * exponential).derivative()(x),
+        2.0 * math.exp(x) + p(x) * math.exp(x),
+    )
+
+    expected_divide = (2.0 * q(x) - p(x) * 4.0) / (q(x) * q(x))
+    assert_relative_close((p / q).derivative()(x), expected_divide)
+    assert_relative_close(sin(p).derivative()(x), math.cos(p(x)) * 2.0)
