@@ -116,6 +116,38 @@ struct subtract_functions_visitor {
   }
 };
 
+struct multiply_functions_visitor {
+  const std::shared_ptr<const Function>& lhs;
+  const std::shared_ptr<const Function>& rhs;
+
+  // Case of multiplying two polynomials
+  std::shared_ptr<const Function> operator()(
+      const std::reference_wrapper<const Polynomial>&,
+      const std::reference_wrapper<const Polynomial>&) const {
+    const auto& lhs_as_p = std::static_pointer_cast<const Polynomial>(lhs);
+    const auto& rhs_as_p = std::static_pointer_cast<const Polynomial>(rhs);
+
+    const auto& coeffs_lhs = lhs_as_p->coefficients();
+    const auto& coeffs_rhs = rhs_as_p->coefficients();
+
+    std::vector<double> coefficients(coeffs_lhs.size() + coeffs_rhs.size() - 1u,
+                                     0.0);
+    for (size_t i = 0u; i < coeffs_lhs.size(); ++i) {
+      for (size_t j = 0u; j < coeffs_rhs.size(); ++j) {
+        coefficients[i + j] += coeffs_lhs[i] * coeffs_rhs[j];
+      }
+    }
+
+    return std::make_shared<Polynomial>(std::move(coefficients));
+  }
+
+  // Generic case
+  template <typename L, typename R>
+  std::shared_ptr<const Function> operator()(const L&, const R&) const {
+    return std::make_shared<const MultiplyFunctions>(lhs, rhs);
+  }
+};
+
 std::shared_ptr<const Function> add_functions(
     const std::shared_ptr<const Function>& lhs,
     const std::shared_ptr<const Function>& rhs) {
@@ -133,7 +165,8 @@ std::shared_ptr<const Function> subtract_functions(
 std::shared_ptr<const Function> multiply_functions(
     const std::shared_ptr<const Function>& lhs,
     const std::shared_ptr<const Function>& rhs) {
-  return std::make_shared<const MultiplyFunctions>(lhs, rhs);
+  return std::visit(multiply_functions_visitor{lhs, rhs}, lhs->as_fvariant(),
+                    rhs->as_fvariant());
 }
 
 std::shared_ptr<const Function> divide_functions(

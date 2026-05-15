@@ -92,10 +92,24 @@ TEST_CASE("test_multiplication") {
   const auto& q =
       std::make_shared<const functions::Polynomial>(std::vector{-0.5, 2.0});
 
-  const auto& c = functions::MultiplyFunctions(p, q);
+  const auto& c = functions::multiply_functions(p, q);
   const double expected = 4 * 0.1 * 0.1 - 0.25;
-  const double actual = c(0.1);
+  const double actual = (*c)(0.1);
   REQUIRE(fabs(expected - actual) < 1e-12);
+  REQUIRE(std::dynamic_pointer_cast<const functions::Polynomial>(c) != nullptr);
+}
+
+TEST_CASE("test_generic_multiplication") {
+  const auto& p =
+      std::make_shared<const functions::Polynomial>(std::vector{0.5, 2.0});
+  const auto& e = std::make_shared<const functions::Exponential>();
+
+  const auto& c = functions::multiply_functions(p, e);
+  const double expected = (*p)(0.1) * (*e)(0.1);
+  const double actual = (*c)(0.1);
+  REQUIRE(fabs(expected - actual) < 1e-12);
+  REQUIRE(std::dynamic_pointer_cast<const functions::MultiplyFunctions>(c) !=
+          nullptr);
 }
 
 TEST_CASE("test_subtraction") {

@@ -84,6 +84,7 @@ def test_mult_functions():
     p2 = numalgs_py.Polynomial([0.7, 0.3])
 
     assert_relative_close((p1 * p2)(2.0), p1(2.0) * p2(2.0))
+    assert type(p1 * p2) == type(p1)
 
 def test_subtract_functions():
     p1 = numalgs_py.Polynomial([1.0, 0.5])
