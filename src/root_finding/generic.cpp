@@ -27,7 +27,8 @@ std::shared_ptr<const Result<double>> find_root(
     return std::make_shared<const Result<double>>(result,
                                                   ResultStatus::success);
   } catch (const NumalgsError& error) {
-    return std::make_shared<const Result<double>>(0.0, ResultStatus::error);
+    return std::make_shared<const Result<double>>(std::nullopt,
+                                                  ResultStatus::error);
   }
 }
 
