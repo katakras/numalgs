@@ -34,3 +34,14 @@ TEST_CASE("test_basic_bisection_via_generic_interface") {
 
   REQUIRE(fabs(f_sol) < 1e-8);
 }
+
+TEST_CASE("test_basic_bisection_error") {
+  const auto& p = dummy_polynomial();
+  const auto& bisection_config =
+      std::make_shared<const root_finding::RootFindingConfigBisection>(5.0,
+                                                                       5.5);
+
+  const auto& result = root_finding::find_root(p, bisection_config);
+
+  REQUIRE(result->status() == ResultStatus::error);
+}

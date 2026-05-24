@@ -1,3 +1,4 @@
+#include <numalgs/errors.hpp>
 #include <numalgs/functions.hpp>
 #include <numalgs/root_finding.hpp>
 
@@ -19,7 +20,7 @@ double bisection(const std::shared_ptr<const functions::Function>& f_ptr,
   if (f_a == 0) return a;
   if (f_b == 0) return b;
 
-  if (f_a * f_b > 0) throw std::exception();
+  if (f_a * f_b > 0) throw NumalgsError("Bisection with f(a) * f(b) > 0");
 
   double mid, f_mid;
   while (fabs(f_a - f_b) >= tol) {
