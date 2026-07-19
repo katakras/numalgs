@@ -45,3 +45,24 @@ TEST_CASE("test_basic_bisection_error") {
 
   REQUIRE(result->status() == ResultStatus::error);
 }
+
+TEST_CASE("test_basic_newton_rhapson") {
+  const auto& p = dummy_polynomial();
+
+  const double sol = root_finding::newton(p, 0.0, 1e-10, 100);
+  const double f_sol = (*p)(sol);
+
+  REQUIRE(fabs(f_sol) < 1e-8);
+}
+
+TEST_CASE("test_basic_newton_rhapson_via_generic_interface") {
+  const auto& p = dummy_polynomial();
+  const auto& nr_config =
+      std::make_shared<const root_finding::RootFindingConfigNewton>(0.0);
+
+  const auto& result = root_finding::find_root(p, nr_config);
+
+  const double f_sol = (*p)(result->value().value());
+
+  REQUIRE(fabs(f_sol) < 1e-8);
+}

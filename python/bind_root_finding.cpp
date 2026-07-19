@@ -13,4 +13,9 @@ void bind_root_finding(nb::module_& m) {
   nb::class_<root_finding::RootFindingConfigBisection>(
       m, "RootFindingConfigBisection")
       .def(nb::init<double, double>(), nb::arg("a"), nb::arg("b"));
+
+  nb::class_<root_finding::RootFindingConfigNewton>(m,
+                                                    "RootFindingConfigNewton")
+      .def(nb::init<double, double, size_t>(), nb::arg("x0"), nb::arg("tol"),
+           nb::arg("max_iters"));
 }

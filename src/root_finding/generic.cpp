@@ -14,6 +14,11 @@ struct RootFindingVisitor {
     return bisection(f_, config->a(), config->b());
   }
 
+  double operator()(
+      const std::shared_ptr<const RootFindingConfigNewton>& config) const {
+    return newton(f_, config->x0(), config->tol(), config->max_iters());
+  }
+
   const std::shared_ptr<const functions::Function>& f_;
 };
 }  // namespace
