@@ -42,6 +42,18 @@ double DivideFunctions::operator()(const double x) const {
   return (*lhs_)(x) / (*rhs_)(x);
 }
 
+struct compose_functions_visitor {
+  const std::shared_ptr<const Function>& outer;
+  const std::shared_ptr<const Function>& inner;
+  // TODO: optimization for composition of polynomials
+
+  // Generic case
+  template <typename O, typename I>
+  std::shared_ptr<const Function> operator()(const O&, const I&) const {
+    return std::make_shared<const ComposedFunction>(outer, inner);
+  }
+};
+
 struct add_functions_visitor {
   const std::shared_ptr<const Function>& lhs;
   const std::shared_ptr<const Function>& rhs;
@@ -147,6 +159,13 @@ struct multiply_functions_visitor {
     return std::make_shared<const MultiplyFunctions>(lhs, rhs);
   }
 };
+
+std::shared_ptr<const Function> compose_functions(
+    const std::shared_ptr<const Function>& outer,
+    const std::shared_ptr<const Function>& inner) {
+  return std::visit(compose_functions_visitor{outer, inner},
+                    outer->as_fvariant(), inner->as_fvariant());
+}
 
 std::shared_ptr<const Function> add_functions(
     const std::shared_ptr<const Function>& lhs,

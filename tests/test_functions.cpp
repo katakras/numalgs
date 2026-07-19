@@ -1,9 +1,8 @@
 #include <math.h>
 
+#include <catch2/catch_test_macros.hpp>
 #include <cmath>
 #include <memory>
-
-#include <catch2/catch_test_macros.hpp>
 #include <numalgs/functions.hpp>
 
 TEST_CASE("test_polynomial") {
@@ -22,9 +21,9 @@ TEST_CASE("test_composition") {
   const auto& q =
       std::make_shared<const functions::Polynomial>(std::vector{-0.5, 2.0});
 
-  const auto& c = functions::ComposedFunction(p, q);
+  const auto& c = functions::compose_functions(p, q);
   const double expected = 4 * 0.1 - 0.5;
-  const double actual = c(0.1);
+  const double actual = (*c)(0.1);
   REQUIRE(expected == actual);
 }
 
@@ -40,9 +39,9 @@ TEST_CASE("test_exponential_composition") {
   const auto& polynomial =
       std::make_shared<const functions::Polynomial>(std::vector{1.0, 2.0});
 
-  const auto& composed = functions::ComposedFunction(exponential, polynomial);
+  const auto& composed = functions::compose_functions(exponential, polynomial);
   const double expected = std::exp((*polynomial)(3.0));
-  const double actual = composed(3.0);
+  const double actual = (*composed)(3.0);
   REQUIRE(fabs(expected - actual) < 1e-12);
 }
 
@@ -63,13 +62,13 @@ TEST_CASE("test_trigonometric_composition") {
   const auto& polynomial =
       std::make_shared<const functions::Polynomial>(std::vector{1.0, 2.0});
 
-  const auto& sin_composed = functions::ComposedFunction(sin, polynomial);
-  const auto& cos_composed = functions::ComposedFunction(cos, polynomial);
-  const auto& tan_composed = functions::ComposedFunction(tan, polynomial);
+  const auto& sin_composed = functions::compose_functions(sin, polynomial);
+  const auto& cos_composed = functions::compose_functions(cos, polynomial);
+  const auto& tan_composed = functions::compose_functions(tan, polynomial);
 
-  REQUIRE(fabs(std::sin((*polynomial)(0.5)) - sin_composed(0.5)) < 1e-12);
-  REQUIRE(fabs(std::cos((*polynomial)(0.5)) - cos_composed(0.5)) < 1e-12);
-  REQUIRE(fabs(std::tan((*polynomial)(0.5)) - tan_composed(0.5)) < 1e-12);
+  REQUIRE(fabs(std::sin((*polynomial)(0.5)) - (*sin_composed)(0.5)) < 1e-12);
+  REQUIRE(fabs(std::cos((*polynomial)(0.5)) - (*cos_composed)(0.5)) < 1e-12);
+  REQUIRE(fabs(std::tan((*polynomial)(0.5)) - (*tan_composed)(0.5)) < 1e-12);
 }
 
 TEST_CASE("test_addition") {
@@ -144,7 +143,8 @@ TEST_CASE("test_polynomial_derivative") {
   const auto& dp = functions::derivative(p);
 
   REQUIRE(fabs((*dp)(2.0) - 14.0) < 1e-12);
-  REQUIRE(std::dynamic_pointer_cast<const functions::Polynomial>(dp) != nullptr);
+  REQUIRE(std::dynamic_pointer_cast<const functions::Polynomial>(dp) !=
+          nullptr);
 
   const auto& constant =
       std::make_shared<const functions::Polynomial>(std::vector{5.0});
@@ -176,8 +176,7 @@ TEST_CASE("test_expression_derivatives") {
   const auto& sin = std::make_shared<const functions::Sin>();
 
   const auto& add = functions::add_functions(p, exponential);
-  REQUIRE(fabs((*functions::derivative(add))(x) - (2.0 + std::exp(x))) <
-          1e-12);
+  REQUIRE(fabs((*functions::derivative(add))(x) - (2.0 + std::exp(x))) < 1e-12);
 
   const auto& subtract = functions::subtract_functions(p, exponential);
   REQUIRE(fabs((*functions::derivative(subtract))(x) - (2.0 - std::exp(x))) <
@@ -185,15 +184,15 @@ TEST_CASE("test_expression_derivatives") {
 
   const auto& multiply = functions::multiply_functions(p, exponential);
   REQUIRE(fabs((*functions::derivative(multiply))(x) -
-               (2.0 * std::exp(x) + (*p)(x) * std::exp(x))) < 1e-12);
+               (2.0 * std::exp(x) + (*p)(x)*std::exp(x))) < 1e-12);
 
   const auto& divide = functions::divide_functions(p, q);
-  const double expected_divide = (2.0 * (*q)(x) - (*p)(x) * 4.0) /
-                                 ((*q)(x) * (*q)(x));
-  REQUIRE(fabs((*functions::derivative(divide))(x) - expected_divide) < 1e-12);
+  const double expected_divide =
+      (2.0 * (*q)(x) - (*p)(x) * 4.0) / ((*q)(x) * (*q)(x));
+  REQUIRE(fabs((*functions::derivative(divide))(x)-expected_divide) < 1e-12);
 
   const auto& composed =
       std::make_shared<const functions::ComposedFunction>(sin, p);
-  REQUIRE(fabs((*functions::derivative(composed))(x) -
-               std::cos((*p)(x)) * 2.0) < 1e-12);
+  REQUIRE(fabs((*functions::derivative(composed))(x)-std::cos((*p)(x)) * 2.0) <
+          1e-12);
 }

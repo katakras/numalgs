@@ -162,6 +162,11 @@ class Polynomial : public Function {
   std::vector<double> coefficients_;
 };
 
+// Returns a function that compounds two functions.
+std::shared_ptr<const Function> compose_functions(
+    const std::shared_ptr<const Function>& outer,
+    const std::shared_ptr<const Function>& inner);
+
 // Returns a function that adds two different functions together.
 std::shared_ptr<const Function> add_functions(
     const std::shared_ptr<const Function>& lhs,

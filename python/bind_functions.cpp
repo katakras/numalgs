@@ -47,8 +47,7 @@ void bind_functions(nb::module_& m) {
       .def("__call__", [](const Fn& f, double x) { return f(x); })
       .def("__call__",
            [](std::shared_ptr<const Fn> f, std::shared_ptr<const Fn> g) {
-             return std::make_shared<const functions::ComposedFunction>(
-                 std::move(f), std::move(g));
+             return functions::compose_functions(f, g);
            })
       .def("__add__",
            [](std::shared_ptr<const Fn> f, std::shared_ptr<const Fn> g) {
