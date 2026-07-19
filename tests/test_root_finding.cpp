@@ -66,3 +66,14 @@ TEST_CASE("test_basic_newton_rhapson_via_generic_interface") {
 
   REQUIRE(fabs(f_sol) < 1e-8);
 }
+
+TEST_CASE("test_newton_rhapson_error_on_zero_derivative") {
+  const auto& p = std::make_shared<const functions::Polynomial>(
+      std::vector{-1.0, 0.0, 1.0});
+  const auto& nr_config =
+      std::make_shared<const root_finding::RootFindingConfigNewton>(0.0);
+
+  const auto& result = root_finding::find_root(p, nr_config);
+
+  REQUIRE(result->status() == ResultStatus::error);
+}

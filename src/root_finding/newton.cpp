@@ -17,7 +17,7 @@ double newton(const std::shared_ptr<const functions::Function>& f_ptr,
 
   double x = x0;
   size_t current_iter = 1u;
-  while (f(x) >= tol && current_iter <= max_iters) {
+  while (fabs(f(x)) >= tol && current_iter <= max_iters) {
     const double df_x = df(x);
     if (df_x < 1e-14) {
       THROW("Found 0 derivative in Newton-Rhapson.");
