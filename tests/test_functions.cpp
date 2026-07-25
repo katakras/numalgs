@@ -14,6 +14,25 @@ TEST_CASE("test_polynomial") {
   REQUIRE(p(3.0) == 1.0 + 0.5 * 3.0 * 3.0);
 }
 
+TEST_CASE("test_constant_polynomial") {
+  const auto& coefficients = std::vector{2.0};
+  functions::Polynomial p(coefficients);
+
+  REQUIRE(p(0.0) == p(1.0));
+  REQUIRE(p(1.0) == 2.0);
+}
+
+// Tests the correct evaluation of polynomails when there are coefficients that
+// are 0's.
+TEST_CASE("test_polynomial_gaps") {
+  const auto& coefficients = std::vector{.0, .0, .0, 2.0};
+  functions::Polynomial p(coefficients);
+
+  REQUIRE(p(0.0) == 0.0);
+  REQUIRE(p(1.0) == 2.0);
+  REQUIRE(p(0.5) == 2.0 * 0.5 * 0.5 * 0.5);
+}
+
 TEST_CASE("test_composition") {
   // expected expression is y = 2*(2*x - 0.5) + 0.5 = 4*x -0.5
   const auto& p =
